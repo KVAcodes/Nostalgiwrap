@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- Button to open the modal -->
+<button id="openModalButton">Open Modal</button>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <!-- Close button -->
+        <span class="close" id="closeModalButton">&times;</span>
+        <!-- Modal content -->
+        <h3>Test Modal</h3>
+        <p>This is a test modal. You can replace this content with your Spotify Wrapped data.</p>
+    </div>
+</div>
+<script src="static/scripts/main_page.js"></script>
+{% endblock %}

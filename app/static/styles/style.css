@@ -1,0 +1,267 @@
+/* Defining some fonts */
+@font-face {
+    font-family: 'NeonFont';
+    src: url('../fonts/neon-webfont.woff') format('woff'),
+         url('../fonts/neon-webfont.woff2') format('woff2');
+}
+
+/* Body */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Background_Animation */
+.video-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Retro-style navbar */
+.navbar-fixed {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    
+}
+.navbar-fixed .navbar-brand {
+    font-family: 'NeonFont', sans-serif;
+    font-size: 18px;
+    color: whitesmoke;
+    text-shadow: 0 0 10px red, 0 0 20px #7DF9FF, 0 0 30px #7DF9FF, 0 0 40px red;
+}
+
+.navbar-fixed .navbar-toggler-icon {
+    background-color: #ff4c4c;
+}
+
+.navbar-fixed .navbar-nav .nav-link {
+    font-family: 'NeonFont', sans-serif;
+    font-size: 15px;
+    color: #fff;
+    text-shadow: 0 0 10px #2b00ff, 0 0 20px #7DF9FF, 0 0 30px #7DF9FF;
+    transition: color 0.3s;
+}
+/* Change color on hover */
+.navbar-fixed .navbar-nav .nav-link:hover {
+    color: #ff4c4c;
+}
+
+/* Change color on click */
+.navbar-fixed .navbar-nav .nav-link:active {
+    color: #7DF9FF;
+}
+
+/* Bottom navbar */
+.navbar-bottom {
+    position: fixed;
+    bottom: 0;
+    width: 50%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: rgba(0, 0, 0, 0);
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.navbar-bottom a {
+    color: #fff;
+    font: 10px 'NeonFont', sans-serif;
+    text-decoration: none; /* Remove underline */
+    padding: 0 15px; /* Add spacing between anchors */
+    transition: color 0.3s; /* Transition effects on hover (color) */
+}
+
+.navbar-bottom a:hover {
+    color:  #ff4c4c; /* Change text color on hover */
+}
+
+/* Load the Pacifico font from a CDN (Content Delivery Network) */
+@import url('https://fonts.googleapis.com/css?family=Pacifico');
+
+/* welcome text */
+.welcome-text {
+    display: flex;
+    align-items: center;
+    perspective: 850px;
+    transform-style: preserve-3d;
+    position: fixed;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height : 20%;
+    font-style: italic;
+    font-family: 'Pacifico', 'NeonFont', sans-serif;
+    font-size: 16px;
+    color: whitesmoke;
+}
+
+p {
+    color: #fff;
+    padding: 20px;
+    transform: rotateY(15deg) translateZ(15px);
+    text-shadow: 0 0 10px #2b00ff, 0 0 20px #7DF9FF, 0 0 30px #7DF9FF; /* Create the glowing effect using text-shadow */ 
+}
+
+/* Login to Spotify button */
+.retro-button {
+    font-family: 'NeonFont', sans-serif;
+    font-size: 18px;
+    color: white;
+    background-color: transparent;
+    border: 2px solid #7DF9FF;
+    border-radius: 4px;
+    text-shadow: 0 0 10px red, 0 0 20px #7DF9FF, 0 0 30px #7DF9FF, 0 0 40px red;
+    margin-left: 20px;
+    transform: rotateY(-30deg) translateZ(15px);
+}
+
+.spotify-icon {
+    width: 70px;
+    height: auto;
+    margin-left: 10px;
+}
+/* Footer */
+.footer {
+    position: fixed;
+    bottom: 50px;
+    width: 50%;
+    height: 40px;;
+    left: 50%;
+    transform: translate(-50%, 0);
+    font-family: 'NeonFont', sans-serif;
+    font-size: 12px;
+    background-color: rgba(0, 0, 0, 0);
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+}
+
+.footer-text {
+    flex: 1;
+}
+
+.social-icons {
+    flex: 1;
+}
+
+.social-icons a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+    font-size: 20px;
+}
+
+.social-icons a:hover {
+    color: red;
+}
+
+.icon-img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Style for modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Transparent background */
+}
+ /* Style for the modal content */
+ .modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Close button style */
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+#openModalButton {
+    font-family: 'NeonFont', sans-serif;
+    font-size: 18px;
+    color: white;
+    background-color: transparent;
+    border: 2px solid #7DF9FF;
+    border-radius: 4px;
+    text-shadow: 0 0 10px red, 0 0 20px #7DF9FF, 0 0 30px #7DF9FF, 0 0 40px red;
+    margin-left: 20px;
+    transform: rotateY(-30deg) translateZ(15px);
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Media Queries*/
+
+/* Small screens (mobile) */
+@media (max-width: 767px) {
+    /* Adjust styles for small screens */
+    .navbar-fixed .navbar-brand {
+        font-size: 16px;
+    }
+    .navbar-fixed .navbar-nav .nav-link {
+        font-size: 12px;
+    }
+    .welcome-text {
+        font-size: 12px;
+    }
+    .footer {
+        width: 80%;
+        font-size: 10px;
+    }
+    .social-icons a {
+        margin: 0 5px;
+        font-size: 16px;
+    }
+    .icon-img {
+        width: 18px;
+        height: 18px;
+    }
+    video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+/* Medium screens (tablets) */
+@media (min-width: 768px) and (max-width: 991px) {
+
+}
+
+/* Large screens (desktop) */
+@media (min-width: 992px) {
+
+}
