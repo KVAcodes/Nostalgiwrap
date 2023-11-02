@@ -99,7 +99,7 @@ video {
     perspective: 850px;
     transform-style: preserve-3d;
     position: fixed;
-    top: 25%;
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 80%;
@@ -110,7 +110,7 @@ video {
     color: whitesmoke;
 }
 
-p {
+.welcome-text p {
     color: #fff;
     padding: 20px;
     transform: rotateY(15deg) translateZ(15px);
@@ -187,16 +187,78 @@ p {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7); /* Transparent background */
 }
- /* Style for the modal content */
- .modal-content {
+
+.tv-screen {
     position: absolute;
     top: 50%;
+    left: 5%;
+    transform: translateY(-50%);
+    width: 50%; /* Set the width to 80% of its parent container */
+    padding-top: 28.125%; /* Maintain a 16:9 aspect ratio (height = width * 9/16) */
+    background: #46503E;
+    border-top: 1px solid #444;
+    border-bottom: 1px solid #444;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+.vignette {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+	background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/86186/crt.png);
+	background-repeat: no-repeat;
+	background-size: 100% 100%;	
+	z-index: 10000;
+}
+
+.noise {
+    /* display this div within the tv-screen div but not overlapping it's background image*/
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;	
+    background: 
+      repeating-radial-gradient(#000 0 0.0001%,#fff 0 0.0002%) 50% 0/2500px 2500px,
+      repeating-conic-gradient(#000 0 0.0001%,#fff 0 0.0002%) 60% 60%/2500px 2500px;
+    background-blend-mode: difference;
+    animation: b .2s infinite alternate;
+    z-index: 9999;
+}
+@keyframes b{
+    100% {background-position: 50% 0, 60% 50%}
+}
+
+
+/* main-page text */
+.main-text {
+    display: flex;
+    align-items: center;
+    perspective: 850px;
+    transform-style: preserve-3d;
+    position: fixed;
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
+    width: 80%;
+    height : 20%;
+    font-style: italic;
+    font-family: 'Pacifico', 'NeonFont', sans-serif;
+    font-size: 16px;
+    color: whitesmoke;
+}
+
+.main-text p {
+    color: #fff;
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transform: rotateY(15deg) translateZ(15px);
+    text-shadow: 0 0 10px #2b00ff, 0 0 20px #7DF9FF, 0 0 30px #7DF9FF; /* Create the glowing effect using text-shadow */ 
+}
+
+#openModalButton {
+    display: none;
 }
 
 /* Close button style */
@@ -206,7 +268,29 @@ p {
     right: 10px;
     cursor: pointer;
 }
-#openModalButton {
+
+.button-container {
+    /* align to the right side of the tv-screen and center vertically */
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    width: 35%;
+    height: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.button-section { 
+    display: flex;
+    flex-direction: row;
+    /* have each button spaced evenly */
+    width: 100%;
+    justify-content: space-evenly;
+
+}
+.custom-button {
     font-family: 'NeonFont', sans-serif;
     font-size: 18px;
     color: white;
@@ -216,13 +300,46 @@ p {
     text-shadow: 0 0 10px red, 0 0 20px #7DF9FF, 0 0 30px #7DF9FF, 0 0 40px red;
     margin-left: 20px;
     transform: rotateY(-30deg) translateZ(15px);
-    display: block;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    transition: all 0.1s ease; /* Add a smooth transition effect */
+}
+  
+.custom-button:active {
+     /* Styling for the active (clicked) state */
+    transform: translateY(2px); /* Move the button down */
 }
 
+.retro-slider {
+    background: transparent; /* Remove the default slider track */
+    width: 100%;
+  }
+  
+.retro-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: #a9a9a9; /* Custom color for the slider thumb */
+    border: 2px solid #555;
+    border-radius: 50%;
+    cursor: pointer;
+}
+  
+.retro-slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: #a9a9a9;
+    border: 2px solid #555;
+    border-radius: 50%;
+    cursor: pointer;
+}
+  
+#slider-value {
+    display: inline-block;
+    margin-left: 10px;
+    font-family: 'Courier New', monospace; /* Retro font */
+    font-size: 24px;
+}
+  
 /* Media Queries*/
 
 /* Small screens (mobile) */
@@ -253,6 +370,13 @@ p {
         width: 100%;
         height: 100%;
         object-fit: cover;
+    }
+    .tv-screen {
+        top: 15%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        padding-top: 70%;
     }
 }
 

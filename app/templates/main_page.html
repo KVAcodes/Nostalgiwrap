@@ -1,17 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
-<!-- Button to open the modal -->
-<button id="openModalButton">Open Modal</button>
-
+<div class="main-text">
+    <p></p>
+    <!-- Button to open the modal -->
+    <button class= "btn btn-primary retro-button" id="openModalButton">Begin</button>
+</div>
 <!-- The Modal -->
 <div id="myModal" class="modal">
-    <div class="modal-content">
-        <!-- Close button -->
-        <span class="close" id="closeModalButton">&times;</span>
-        <!-- Modal content -->
-        <h3>Test Modal</h3>
-        <p>This is a test modal. You can replace this content with your Spotify Wrapped data.</p>
+    <!-- Close button -->
+    <span class="close" id="closeModalButton">&times;</span>
+    <!-- Modal content -->
+    <div class="tv-screen">
+        <div class="noise">
+            <div class="vignette"></div>
+        </div>
+    </div>
+    <div class="button-container">
+        <div class="button-section">
+            <div class="form-group">
+                <label for="retro-slider">Select a value:</label>
+                <input type="range" class="form-control-range retro-slider" id="retro-slider" min="0" max="50" value="25">
+                <span id="slider-value">25</span>
+            </div>
+        </div>
+        <div class="button-section">
+            <button class="btn btn-primary custom-button">Past month</button>
+            <button class="btn btn-secondary custom-button">Past 6 months</button>
+            <button class="btn btn-info custom-button">Your Lifetime</button>
+        </div>
+        <div class="button-section">
+            <button class="btn btn-primary custom-button">Top Artists</button>
+            <button class="btn btn-secondary custom-button">Top Tracks</button>
+            <button class="btn btn-info custom-button">Top Genres</button>
+            <button class="btn btn-success custom-button">Your Stats</button>
+        </div>
     </div>
 </div>
+<script>
+    var user = {{ user|tojson|safe }};
+</script>
 <script src="static/scripts/main_page.js"></script>
 {% endblock %}

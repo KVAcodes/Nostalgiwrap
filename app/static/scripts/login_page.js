@@ -2,29 +2,35 @@
 function typeWriter(text, elementClass, speed) {
     const textElement = document.querySelector(elementClass);
     let i = 0;
+    let isTyping = true;
+    const button = document.createElement('a');
+    button.classList.add('btn', 'btn-primary', 'retro-button');
+    button.href = '/login';
+    button.innerHTML = 'Login to <img src="static/images/Spotify_Logo_CMYK_White.png" alt="Spotify Logo" class="spotify-icon">';
+    button.style.display = 'none';
+    textElement.parentElement.appendChild(button);
 
     function type() {
-        if (i < text.length) {
+        if (i < text.length && isTyping) {
             textElement.textContent += text.charAt(i);
             i++;
             setTimeout(type, speed);
         } else {
             // Typing is complete, so add the button here
-            const button = document.createElement('a');
-            button.classList.add('btn', 'btn-primary', 'retro-button');
-            button.href = '/login';
-
-            button.innerHTML = 'Login to <img src="static/images/Spotify_Logo_CMYK_White.png" alt="Spotify Logo" class="spotify-icon">';
-
-            textElement.parentElement.appendChild(button);
             button.style.display = 'block';
-
             // add any additional styling or classes to the button here
             
             // add event listeners or functionality to the button here
         }
     }
     type(); // Start the typing effect
+    document.addEventListener('click', function() {
+        // Set isTyping to false to stop the typing process
+        isTyping = false;
+        // To Display the full text immediately
+        textElement.innerHTML = text;
+        button.style.display = 'block';
+      });
 }
 
 document.addEventListener('DOMContentLoaded', function() {

@@ -25,7 +25,6 @@ CLIENT_SECRET = '2b1ed529568b431fac006ce480003b7f'
 SCOPE = 'user-read-currently-playing user-read-playback-state user-modify-playback-state user-top-read'
 # remember to add more scopes here if you need to access more user information
 
-
 @app.route('/')
 def login_page():
     """ Renders the login page when the user visits the application
@@ -79,8 +78,39 @@ def main():
     except:
         return redirect(url_for('login'))
     sp = spotipy.Spotify(auth=token_info['access_token'])
-    return render_template('main_page.html')
+    user = sp.current_user()
+    name = user['display_name']
+    if name is None:
+        name = 'traveller'
+    elif len(name.split()) > 1:
+        name = name.split()[-1]
+        name = name[0].upper() + name[1:]
+    return render_template('main_page.html', user=name)
 
+@app.route('/top')
+def top():
+    try:
+        token_info = get_token()
+    except:
+        return redirect(url_for('login'))
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    type = request.headers.get('type')
+    time_range = request.headers.get('time_range')
+    limit = request.headers.get('limit')
+    if type == 'artists':
+        top_artists = sp.current_user_top_artists(limit=limit, time_range=time_range)
+        return jsonify(top_artists)
+    elif type == 'tracks':
+        top_tracks = sp.current_user_top_tracks(limit=limit, time_range=time_range)
+        return jsonify(top_tracks)
+    elif type == 'genres':
+        top_artists = sp.current_user_top_artists(limit=limit, time_range=time_range)
+        genres = []
+        for artist in top_artists['items']:
+            genres.extend(artist['genres'])
+        return jsonify(genres)
+    else:
+        return jsonify({'error': 'invalid type'})
 
 def get_token():
     """ Returns the user's access token from the session cookie if it exists.
