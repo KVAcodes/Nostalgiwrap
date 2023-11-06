@@ -12,6 +12,10 @@ app = Flask(__name__)
 
 app.config['UPLOAD_FOLDER'] = 'static'
 
+# configure CORS to allow requests from all origins
+from flask_cors import CORS
+CORS(app)
+
 # Flask app configurations
 app.config['SESSION_COOKIE_NAME'] = 'spotify-login-session'
 app.secret_key = 'osfjmweofmfwvsncm@#^*$'
@@ -87,30 +91,39 @@ def main():
         name = name[0].upper() + name[1:]
     return render_template('main_page.html', user=name)
 
-@app.route('/top')
+# a route /top to receive a post request with a body containing a json object with the following structure: {time_range: 'short_term' | 'medium_term' | 'long_term', limit: number, type: 'artists' | 'tracks'| 'genres' | 'stats'} with this information, the server will make a request to the spotify api and return the top artists, tracks, genres or stats of the user
+@app.route('/top', methods=['POST'])
 def top():
+    # get the token checking if it is expired
     try:
         token_info = get_token()
     except:
         return redirect(url_for('login'))
     sp = spotipy.Spotify(auth=token_info['access_token'])
-    type = request.headers.get('type')
-    time_range = request.headers.get('time_range')
-    limit = request.headers.get('limit')
-    if type == 'artists':
-        top_artists = sp.current_user_top_artists(limit=limit, time_range=time_range)
-        return jsonify(top_artists)
-    elif type == 'tracks':
-        top_tracks = sp.current_user_top_tracks(limit=limit, time_range=time_range)
-        return jsonify(top_tracks)
-    elif type == 'genres':
-        top_artists = sp.current_user_top_artists(limit=limit, time_range=time_range)
+    data = request.get_json()
+    time_range = data['range']
+    limit = data['limit']
+    type = data['type']
+    if type == 'Artists':
+        top = sp.current_user_top_artists(time_range=time_range, limit=limit)
+        # for each artist, get the artist's top track and add it to the artist object as a new property called 'top_track'
+        for artist in top['items']:
+            artist['top_track'] = sp.artist_top_tracks(artist['id'])['tracks'][0]
+    elif type == 'Tracks':
+        top = sp.current_user_top_tracks(time_range=time_range, limit=limit)
+        # for each track, get the artist of the tracks'image and add it to the track object as a new property called 'artist_image'
+        for track in top['items']:
+            track['artist_image'] = sp.artist(track['album']['artists'][0]['id'])['images'][0]['url']
+    elif type == 'Genres':
+        top = sp.current_user_top_artists(time_range=time_range, limit=50)
         genres = []
-        for artist in top_artists['items']:
+        for artist in top['items']:
             genres.extend(artist['genres'])
-        return jsonify(genres)
-    else:
-        return jsonify({'error': 'invalid type'})
+        # count the number of times each genre appears and sort them by frequency in descending order
+        top = sorted({genre: genres.count(genre) for genre in genres}.items(), key=lambda x: x[1], reverse=True)
+        # return only the top 10 genres
+        top = top[:10]
+    return jsonify(top)
 
 def get_token():
     """ Returns the user's access token from the session cookie if it exists.

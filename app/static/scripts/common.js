@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const video_dyn = document.getElementById('background-video');
 
     function setVideoSource() {
-        if (window.innerWidth <= 767) {
+        if (window.innerWidth <= 650) {
             // Loads the mobile video source on smaller screens
             video_dyn.src = 'static/videos/Background_Animation_mobile.mp4';
             video_dyn.muted = true;

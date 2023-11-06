@@ -4,13 +4,11 @@
     src: url('../fonts/neon-webfont.woff') format('woff'),
          url('../fonts/neon-webfont.woff2') format('woff2');
 }
-
 /* Body */
 body {
     margin: 0;
     padding: 0;
 }
-
 /* Background_Animation */
 .video-container {
     position: fixed;
@@ -20,21 +18,18 @@ body {
     height: 100%;
     overflow: hidden;
 }
-
 video {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-
 /* Retro-style navbar */
 .navbar-fixed {
     background-color: rgba(0, 0, 0, 0.5);
     position: fixed;
     top: 0;
     width: 100%;
-    z-index: 1000;
-    
+    z-index: 1000;   
 }
 .navbar-fixed .navbar-brand {
     font-family: 'NeonFont', sans-serif;
@@ -42,11 +37,9 @@ video {
     color: whitesmoke;
     text-shadow: 0 0 10px red, 0 0 20px #7DF9FF, 0 0 30px #7DF9FF, 0 0 40px red;
 }
-
 .navbar-fixed .navbar-toggler-icon {
     background-color: #ff4c4c;
 }
-
 .navbar-fixed .navbar-nav .nav-link {
     font-family: 'NeonFont', sans-serif;
     font-size: 15px;
@@ -63,7 +56,6 @@ video {
 .navbar-fixed .navbar-nav .nav-link:active {
     color: #7DF9FF;
 }
-
 /* Bottom navbar */
 .navbar-bottom {
     position: fixed;
@@ -76,7 +68,6 @@ video {
     text-align: center;
     padding: 10px 0;
 }
-
 .navbar-bottom a {
     color: #fff;
     font: 10px 'NeonFont', sans-serif;
@@ -84,11 +75,9 @@ video {
     padding: 0 15px; /* Add spacing between anchors */
     transition: color 0.3s; /* Transition effects on hover (color) */
 }
-
 .navbar-bottom a:hover {
     color:  #ff4c4c; /* Change text color on hover */
 }
-
 /* Load the Pacifico font from a CDN (Content Delivery Network) */
 @import url('https://fonts.googleapis.com/css?family=Pacifico');
 
@@ -109,14 +98,12 @@ video {
     font-size: 16px;
     color: whitesmoke;
 }
-
 .welcome-text p {
     color: #fff;
     padding: 20px;
     transform: rotateY(15deg) translateZ(15px);
     text-shadow: 0 0 10px #2b00ff, 0 0 20px #7DF9FF, 0 0 30px #7DF9FF; /* Create the glowing effect using text-shadow */ 
 }
-
 /* Login to Spotify button */
 .retro-button {
     font-family: 'NeonFont', sans-serif;
@@ -129,7 +116,6 @@ video {
     margin-left: 20px;
     transform: rotateY(-30deg) translateZ(15px);
 }
-
 .spotify-icon {
     width: 70px;
     height: auto;
@@ -152,32 +138,39 @@ video {
     display: flex;
     align-items: center;
 }
-
 .footer-text {
     flex: 1;
 }
-
 .social-icons {
     flex: 1;
 }
-
 .social-icons a {
     color: #fff;
     text-decoration: none;
     margin: 0 10px;
     font-size: 20px;
 }
-
 .social-icons a:hover {
     color: red;
 }
-
 .icon-img {
     width: 24px;
     height: 24px;
 }
-
 /* Style for modal */
+#on-arrival {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    width: 50%;
+    transform: translate(-50%, 0);
+    color: #fff;
+    padding: 20px;
+    text-shadow: 0 0 10px #2b00ff, 0 0 20px #7DF9FF, 0 0 30px #7DF9FF;
+    font-family: 'Pacifico','NeonFont', sans-serif;
+    font-style: italic;
+    font-size: 1.5vw;
+}
 .modal {
     display: none;
     position: fixed;
@@ -185,9 +178,8 @@ video {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Transparent background */
+    background-color: rgba(0, 0, 0, 0.8); /* Transparent background */
 }
-
 .tv-screen {
     position: absolute;
     top: 50%;
@@ -210,9 +202,8 @@ video {
 	background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/86186/crt.png);
 	background-repeat: no-repeat;
 	background-size: 100% 100%;	
-	z-index: 10000;
+	z-index: 10004;
 }
-
 .noise {
     /* display this div within the tv-screen div but not overlapping it's background image*/
     position: absolute;
@@ -227,10 +218,21 @@ video {
     animation: b .2s infinite alternate;
     z-index: 9999;
 }
+
 @keyframes b{
     100% {background-position: 50% 0, 60% 50%}
 }
-
+@keyframes shutdown {
+    0%        { opacity: 0; }
+    8%, 46%   { transform: scale(1, 1); opacity: 1; }
+    50%       { transform: scale(1, 0.02); opacity: 0.8; }
+    55%, 100% { transform: scale(0, 0); opacity: 0.3; }
+}
+/* an animation for a div to fade away in 4s */
+@keyframes fadeOut {
+    0%   { opacity: 1; }
+    100% { opacity: 0; }
+}
 
 /* main-page text */
 .main-text {
@@ -266,8 +268,13 @@ video {
     position: absolute;
     top: 10px;
     right: 10px;
+    font-size: 2vw;
+    color: #fff;
+    text-shadow: 0 0 10px #2b00ff, 0 0 20px #7DF9FF, 0 0 30px #7DF9FF; /* Create the glowing effect using text-shadow */
     cursor: pointer;
 }
+
+/* BUTTONS & CONTROLLER section */
 
 .button-container {
     /* align to the right side of the tv-screen and center vertically */
@@ -275,13 +282,21 @@ video {
     top: 50%;
     right: 5%;
     width: 35%;
-    height: 50%;
+    height: 70%;
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
 }
+.button-title {
+    font-family: 'NeonFont', sans-serif;
+    font-size: 2vw;
+    color: white;
+    text-align: center;
+    text-shadow: 0 0 3px red, 0 0 5px #7DF9FF, 0 0 7px #7DF9FF, 0 0 10px red;
+}
+
 .button-section { 
     display: flex;
     flex-direction: row;
@@ -292,24 +307,90 @@ video {
 }
 .custom-button {
     font-family: 'NeonFont', sans-serif;
-    font-size: 18px;
+    font-size: 1.5vw;
     color: white;
     background-color: transparent;
     border: 2px solid #7DF9FF;
     border-radius: 4px;
-    text-shadow: 0 0 10px red, 0 0 20px #7DF9FF, 0 0 30px #7DF9FF, 0 0 40px red;
-    margin-left: 20px;
-    transform: rotateY(-30deg) translateZ(15px);
+    text-shadow: 0 0 3px red, 0 0 5px #7DF9FF, 0 0 7px #7DF9FF, 0 0 10px red;
+    margin-left: 1vw;
     transition: all 0.1s ease; /* Add a smooth transition effect */
 }
+.custom-button.selected {
+    background-color: rgb(38, 61, 177);
+}
   
+
 .custom-button:active {
      /* Styling for the active (clicked) state */
     transform: translateY(2px); /* Move the button down */
 }
 
+.controller-section {
+    position: absolute;
+    top: 50%;
+    right: 5%;
+    width: 35%;
+    height: 70%;
+    transform: translateY(-50%);
+    display: none;
+}
+.controller-section .top-half {
+    /* takes the top half of the controller-section */
+    height: 70%;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+.top-half p{
+    font-family: 'NeonFont', sans-serif;
+    font-size: 1.2vw;
+    color: white;
+    width: 100%;
+    text-align: center;
+    text-shadow: 0 0 3px red, 0 0 5px #7DF9FF, 0 0 7px #7DF9FF, 0 0 10px red;
+
+}
+.controller-section .bottom-half {
+    /* takes the bottom half of the controller-section */
+    height: 30%;
+    width: 100%;
+}
+.controller-button {
+    /* circular buttons */
+    font-family: 'NeonFont', sans-serif;
+    font-size: 1vw;
+    height: 4vw;
+    width: 4vw;
+    color: white;
+    background-color: transparent;
+    border: 2px solid #7DF9FF;
+    border-radius: 50%;
+    text-shadow: 0 0 3px red, 0 0 5px #7DF9FF, 0 0 7px #7DF9FF, 0 0 10px red;
+    margin-left: 1vw;
+    transition: all 0.1s ease;
+}
+#genre-recommend-playlist {
+    font-family: 'NeonFont', sans-serif;
+    font-size: 2vw;
+    color: white;
+    background-color: transparent;
+    border: 2px solid #7DF9FF;
+    border-radius: 4px;
+    text-shadow: 0 0 3px red, 0 0 5px #7DF9FF, 0 0 7px #7DF9FF, 0 0 10px red;
+    margin-left: 1vw;
+    transition: all 0.1s ease;
+}
+label[for="retro-slider"] {
+    color: white; /* Change the text color to a darker shade */
+    font-size: 1.2vw; /* Increase the font size */
+    font-family: 'NeonFont', sans-serif;
+    margin-bottom: 1vw; /* Add some spacing below the label */
+}
+
 .retro-slider {
-    background: transparent; /* Remove the default slider track */
+    background: transparent;
+    border: 2px solid #7DF9FF;
     width: 100%;
   }
   
@@ -318,8 +399,8 @@ video {
     appearance: none;
     width: 24px;
     height: 24px;
-    background: #a9a9a9; /* Custom color for the slider thumb */
-    border: 2px solid #555;
+    background: rgb(66, 66, 254); /* Custom color for the slider thumb */
+    border: 3px solid  rgb(255, 97, 97);
     border-radius: 50%;
     cursor: pointer;
 }
@@ -327,23 +408,264 @@ video {
 .retro-slider::-moz-range-thumb {
     width: 24px;
     height: 24px;
-    background: #a9a9a9;
-    border: 2px solid #555;
+    background:  rgb(66, 66, 254); /* Custom color for the slider thumb */
+    border: 3px solid rgb(255, 97, 97);
     border-radius: 50%;
     cursor: pointer;
+}
+
+/* add a hover effect to the slider thumb */
+.retro-slider::-webkit-slider-thumb:hover {
+    background: rgb(77, 112, 218);
+}
+
+.retro-slider::-moz-range-thumb:hover {
+    background: rgb(77, 112, 218);
 }
   
 #slider-value {
     display: inline-block;
     margin-left: 10px;
-    font-family: 'Courier New', monospace; /* Retro font */
-    font-size: 24px;
+    font-family: 'NeonFont', sans-serif;
+    font-size: 1.2vw;
+    color: white;
 }
+
+#submit-button {
+    display: none;
+}
+
+/* for displaying the tracks on the screen */
+.track-container {
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 10000;
+    /* blur the background image only and the not the contained elements */
+}
+.track-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: inherit;
+    filter: blur(5px); /* Adjust the blur amount as needed */
+    z-index: -1;
+    backdrop-filter: blur(5px); /* Adjust the blur amount as needed */
+  }
+
+.artist-div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: 50% 100%;
+    background-position: center center;
+    z-index: 10001;
+}
+
+.track-div {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #282a35;
+    display: flex;
+    max-height: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10001;
+}
+.track-div img {
+    border-image: url('//s3-us-west-2.amazonaws.com/s.cdpn.io/4273/frame.png') 93 92 87 92 stretch stretch; 
+    border-color: #f4be52;
+    border-style: inset;
+    border-width: 20px;
+    display: block;
+    width: 35%;
+    height: auto;
+    background-color: #ffe;
+}
+.track-div h1 {
+    font-family: 'Pacifico', 'NeonFont', sans-serif;
+    font-size: 2.5vw;
+    color: white;
+    text-align: center;
+    text-shadow: 0 0 3px red, 0 0 5px #7DF9FF, 0 0 7px #7DF9FF, 0 0 10px red;
+
+}
+.track-div p {
+    font-family: 'NeonFont', sans-serif;
+    font-size: 1.4vw;
+    color: white;
+    text-align: center;
+    text-shadow: 0 0 3px red, 0 0 5px #7DF9FF, 0 0 7px #7DF9FF, 0 0 10px red;
+
+}
+/* for displaying the artists on the screen */
+.artist-container {
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+}
+.now-div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #282a35;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.now-div p {
+    font-family: 'NeonFont', sans-serif;
+    font-size: 1.4vw;
+    color: white;
+    width: 80%;
+    text-align: center;
+    text-shadow: 0 0 3px red, 0 0 5px #7DF9FF, 0 0 7px #7DF9FF, 0 0 10px red;
+}
+/* for displaying the genres on the screen */
+.genre-container {
+    position: absolute;
+    background-color: #282a35;
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10001;
+}
+.genre-div {
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: credits-scroll 15s linear infinite;
+}
+.genre-div p{
+    font-family: 'NeonFont', sans-serif;
+    font-size: 2.5vw;
+    color: white;
+}
+.genre-div h1 {
+    font-family: 'Pacifico', 'NeonFont', sans-serif;
+    font-size: 3vw;
+    color: white;
+    text-align: center;
+    text-shadow: 0 0 3px red, 0 0 5px #7DF9FF, 0 0 7px #7DF9FF, 0 0 10px red;
+}
+/* an animation to screen-roll the genre-div into the view of the genre-container from the bottom to far above*/
+@keyframes credits-scroll {
+    0% {
+      top: 100%;
+    }
+    100% {
+      top: -350%;
+    }
+  }
+/* TV Static Animation Layers */
+
+.static-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        transparent 0,
+        transparent 1px, /* Adjust line thickness */
+        #fff 1px, /* Adjust line color */
+        #fff 2px /* Adjust space between lines */
+      );
+    animation: static-animation-top 5s linear infinite;
+    opacity: 0.25;
+    z-index: 10002;
+  }
+.static-bottom {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height:100%;
+    background: linear-gradient(transparent 60%, #fff 60%, transparent 100%);
+    background-size: 100% 40px;
+    animation: static-animation-bottom 15s linear infinite;
+    opacity: 0.25;
+    z-index: 10002;
+  }
+@keyframes static-animation-top {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-100%);
+    }
+  }
+@keyframes static-animation-bottom {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    25%, 75% {
+      transform: translateY(100%);
+    }
+    50% {
+      transform: translateY(-100%);
+    }
+  }
+
+/* Nostalgic Filter */
+.nostalgic-filter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    filter: sepia(0.5) hue-rotate(90deg) saturate(1.5) contrast(0.8) brightness(1.2);
+    background: linear-gradient(
+      rgba(243, 223, 186, 0.3) 0%,
+      rgba(243, 223, 186, 0.6) 50%,
+      rgba(243, 223, 186, 0.3) 100%
+    ), 
+    url('../images/vintage_filter.jpg'); /* Replace with your nostalgic overlay image */
+    background-blend-mode: multiply;
+    animation: flicker 1ms ease infinite;
+    z-index: 10003;
+  }
   
-/* Media Queries*/
+  @keyframes flicker {
+    0%, 100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 0.2;
+    }
+  }
+
+/* MEDIA QUERIES*/
 
 /* Small screens (mobile) */
-@media (max-width: 767px) {
+@media (max-width: 600px) {
     /* Adjust styles for small screens */
     .navbar-fixed .navbar-brand {
         font-size: 16px;
@@ -372,11 +694,51 @@ video {
         object-fit: cover;
     }
     .tv-screen {
-        top: 15%;
+        top: 7%;
         left: 50%;
         transform: translateX(-50%);
         width: 90%;
-        padding-top: 70%;
+        padding-top: 60%;
+    }
+    .track-div img {
+        width: 40%;
+    }
+    .track-div h1 {
+        font-size: 4vw;
+    }
+    .track-div p {
+        font-size: 3vw;
+    }
+    /* CONTROLLER section */
+    .button-container {
+        bottom: 10%;
+        left: 50%;
+        width: 90%;
+        height: 45%;
+        transform: translateX(-50%);
+    }
+    .button-title {
+        font-size: 7vw;
+    }
+    .custom-button {
+        font-size: 3vw;
+    }
+    label[for="retro-slider"] {
+        font-size: 3vw;
+    }
+    #slider-value {
+        font-size: 3vw;
+    }
+    .close {
+        top: 10px;
+        left: 10px;
+        font-size: 5vw;
+    }
+    .genre-div p{
+        font-size: 5vw;
+    }
+    .genre-div h1 {
+        font-size: 6vw;
     }
 }
 

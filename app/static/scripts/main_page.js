@@ -92,7 +92,12 @@ function playVideoWithSound() {
     // Open the modal after the video finishes (you can adjust the time accordingly)
     setTimeout(() => {
         openModal();
-    }, backgroundVideo.duration * 100);
+        typeWriter(`We've arrived! ${user}, let's delve into the history of you`, "#on-arrival", 20)
+        setTimeout(() => {
+            document.getElementById("on-arrival").style.display = "none";
+        }
+        , 5000);
+    }, backgroundVideo.duration * 150);
 }
 openModalButton.addEventListener("click", playVideoWithSound);
 
@@ -117,6 +122,11 @@ window.addEventListener("click", (event) => {
 window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
         modal.style.display = "none";
+        removeBlur(); // Call this function to remove the blur filter
+        backgroundVideo.play();
+        backgroundVideo.muted = true;
+        backgroundVideo.playbackRate = 1;
+        backgroundVideo.currentTime = 0;
     }
 });
 
