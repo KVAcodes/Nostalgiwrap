@@ -11,6 +11,7 @@
     <p id="on-arrival"></p>
     <!-- Close button -->
     <span class="close" id="closeModalButton">&times;</span>
+    <button class="btn btn-secondary custom-button" id="return">&#8592;</button>
     <!-- Modal content -->
     <div class="tv-screen">
         <div class="noise"></div>
@@ -18,6 +19,7 @@
         <div class="static-top"></div>
         <div class="static-bottom"></div>
         <div class="nostalgic-filter"></div>
+        <div class="old-filter"></div>
     </div>
     <div class="button-container">
         <h1 class="button-title">&lt;&lt;&lt; Clear the signal with your preferences below. &DownArrow;</h1>
@@ -48,6 +50,6 @@
 <script>
     var user = {{ user|tojson|safe }};
 </script>
-<script src="static/scripts/main_page.js"></script>
-<script src="static/scripts/retrieve_display.js"></script>
+<script src="static/scripts/main_page.js" type="module"></script>
+<script src="static/scripts/retrieve_display.js" type="module"></script>
 {% endblock %}

@@ -1,5 +1,8 @@
+// import the reset function for the retrieve_display.js module in the same directory
+import { reset } from './retrieve_display.js';
+
 // function to create the typing effect
-function typeWriter(text, elementClass, speed) {
+export function typeWriter(text, elementClass, speed) {
     const textElement = document.querySelector(elementClass);
     const button = document.querySelector('#openModalButton');
     let i = 0;
@@ -50,6 +53,8 @@ function removeBlur() {
 
 // Function to gradually return the video to its original state
 function returnVideoToOriginalState() {
+    let playback_diff = 0;
+    let volume_diff = 0;
     const originalPlaybackRate = 1; //  original playback rate (normal speed)
     const playbackIncrement = 0.6; // increment to adjust the playback rate as needed
     const originalVolume = 0.0; // original volume level
@@ -103,6 +108,7 @@ openModalButton.addEventListener("click", playVideoWithSound);
 
 // Function to close the modal
 closeModalButton.addEventListener("click", () => {
+    reset(); // Call the reset function to reset the display
     modal.style.display = "none";
     removeBlur(); // Call this function to remove the blur filter
     backgroundVideo.play();
@@ -111,16 +117,10 @@ closeModalButton.addEventListener("click", () => {
     backgroundVideo.currentTime = 0;
 });
 
-// Close the modal if the user clicks outside of it
-window.addEventListener("click", (event) => {
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-});
-
 // Close the modal if the user presses the escape key
 window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+        reset(); // Call the reset function to reset the display
         modal.style.display = "none";
         removeBlur(); // Call this function to remove the blur filter
         backgroundVideo.play();
