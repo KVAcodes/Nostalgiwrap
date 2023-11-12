@@ -86,7 +86,7 @@ function makeArtists() {
             nowPlayingDiv.innerHTML = `<p></p>`;
             const artistDiv = document.createElement('div');
             artistDiv.classList.add('track-div');
-            artistDiv.innerHTML = `<h1>#${artist_count}. ${artist.name}</h1><img src="${artist.images[0].url}" alt="${artist.name}">`;         
+            artistDiv.innerHTML = `<h1>#${artist_count}. ${artist.name}</h1><img src="${artist.images[0].url}" alt="${artist.name}">`;
             artistContainer.appendChild(nowPlayingDiv);
             artistContainer.appendChild(artistDiv);
 
@@ -224,8 +224,8 @@ document.getElementById('submit-button').addEventListener('click', () => {
             if (response !== null) {
                 if (selectedValues.type === 'Tracks') {
                     makeTracks();
-                    displayTracks();
-                        // display the button with id "return"
+                    displayTracks(0);
+                    // display the button with id "return"
                     document.getElementById('return').style.display = 'block';
                     topTracksPlaylist();
                 }
@@ -244,8 +244,8 @@ document.getElementById('submit-button').addEventListener('click', () => {
         })
         .catch((error) => {
             console.error('Error:', error);
-        });    
-    });
+        });
+});
 
 let controllerButtonStore = null;
 // Function to add event listeners to the controller buttons and add the selected class to the button that is clicked, if the controllerButtonStore is not null, remove the selected class from the controllerButtonStore and then add the selected class to the button that is clicked and then update the controllerButtonStore
@@ -276,6 +276,7 @@ function addControllerEventListeners() {
         });
     });
 }
+
 // add event listener to the button with id "return" to fade out the controller-section class div and fade in the button-container class div
 document.getElementById('return').addEventListener('click', () => {
     shouldStop = true;
@@ -292,7 +293,7 @@ function genreRecommendPlaylist() {
     const topHalf = document.querySelector('.top-half');
     const bottomHalf = document.querySelector('.bottom-half');
     const genreRecommend = document.createElement('p');
-    genreRecommend.textContent = 'We recommend the following playlist based on your selected genre';
+    genreRecommend.textContent = `You have an Exquisite music taste ${user}. Using the spotify resources at my disposal, I have created a playlist of recommended songs based on your top genres, Enjoy!`;
     topHalf.appendChild(genreRecommend);
     const controllerButton = document.createElement('button');
     controllerButton.classList.add('btn');
@@ -349,7 +350,7 @@ function topTracksPlaylist() {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({range: playlistRange}),  
+            body: JSON.stringify({ range: playlistRange }),
         })
             .then((response) => response.json())
             .then((data) => {
@@ -447,6 +448,41 @@ function resetTvScreenAfterArtist() {
     oldFilter.style.opacity = '0';
 }
 
+// Function resetTvScreenAfterTrack to reset the tv-screen element to it's original state after a track has been displayed on it
+function resetTvScreenAfterTrack() {
+    const noise = document.querySelector('.noise');
+    const artistDiv = document.querySelector('.artist-div');
+    const staticTop = document.querySelector('.static-top');
+    const staticBottom = document.querySelector('.static-bottom');
+    const nostalgicFilter = document.querySelector('.nostalgic-filter');
+    const oldFilter = document.querySelector('.old-filter');
+    noise.style.opacity = '1';
+    // check if the artistDiv still exists before trying to change it's opacity
+    if (artistDiv) artistDiv.style.opacity = '0';
+    staticTop.style.display = 'none';
+    staticBottom.style.display = 'none';
+    nostalgicFilter.style.display = 'none';
+    oldFilter.style.display = 'none';
+    oldFilter.style.opacity = '0';
+}
+
+// Function resetTvScreenAfterGenre to reset the tv-screen element to it's original state after a genre has been displayed on it
+function resetTvScreenAfterGenre() {
+    const noise = document.querySelector('.noise');
+    const genreContainer = document.querySelector('.genre-container');
+    const staticTop = document.querySelector('.static-top');
+    const staticBottom = document.querySelector('.static-bottom');
+    const nostalgicFilter = document.querySelector('.nostalgic-filter');
+    const oldFilter = document.querySelector('.old-filter');
+    noise.style.opacity = '1';
+    staticTop.style.display = 'none';
+    staticBottom.style.display = 'none';
+    nostalgicFilter.style.display = 'none';
+    oldFilter.style.display = 'none';
+    oldFilter.style.opacity = '0';
+}
+
+
 // STOP AND START AUDIO
 // Function stopAudio to stop the audio from playing
 function stopAudio() {
@@ -470,6 +506,10 @@ function startAudio(preview) {
 function displayArtists(artist) {
     displayArtist(artist);
 }
+// Function displayTracks to display the tracks on the element with id "tvscreen"
+function displayTracks(track) {
+    displayTrack(track);
+}
 
 
 
@@ -487,56 +527,71 @@ function displayArtist(index) {
     // add display to the "static-top" and "static-bottom" classes
     document.querySelector('.static-top').style.display = 'block';
     document.querySelector('.static-bottom').style.display = 'block';
-    let nowDivInterval = setInterval(() => {
-        if (shouldStop) {
-            clearInterval(nowDivInterval);
-            return;
-        }
-        if (tvScreen.contains(artists[index].topDiv)) {
-            nowDiv.style.transition = 'all 1s ease-in-out';
-            nowDiv.style.opacity = '1';
-            const preview = artists[index].topDiv.getAttribute('data-preview');
-            // play the track preview
-            startAudio(preview);
-            audio.addEventListener('ended', () => {
-                if (shouldStop) return;
-                resetTvScreenAfterArtist();
-                flushtvScreen();    
-                if (index + 1 >= artists.length) {
-                    displayArtists(0);
-                }
-                else {
-                    displayArtist(index + 1);
-                }
-            });
-            let volume = 0.2;
-            let volumeInterval = setInterval(() => {
-                if (shouldStop) {
-                    clearInterval(volumeInterval);
-                    return;
-                }
-                if (volume < 1 && 1 - volume >= 0.1) {
-                    volume += 0.1;
-                    audio.volume = volume;
-                }
-                else {
-                    clearInterval(volumeInterval);
-                }
-            }, 1000);
-            document.querySelector('.nostalgic-filter').style.display = 'block';
-            document.querySelector('.old-filter').style.display = 'block';
-            if (selectedValues.range === 'short_term') {
-                document.querySelector('.old-filter').style.opacity = '0.3';
-            }
-            else if (selectedValues.range === 'medium_term') {
-                document.querySelector('.old-filter').style.opacity = '0.6';
+    if (shouldStop) {
+        return;
+    }
+    nowDiv.style.transition = 'all 1s ease-in-out';
+    nowDiv.style.opacity = '1';
+    const preview = artists[index].topDiv.getAttribute('data-preview');
+    // play the track preview
+    startAudio(preview);
+    audio.addEventListener('ended', () => {
+        if (shouldStop) return;
+        resetTvScreenAfterArtist();
+        flushtvScreen();
+        if (index + 1 >= artists.length) {
+            if (controllerButtonStore !== null) {
+                controllerButtonStore.classList.remove('selected');
+                controllerButtonStore = document.querySelectorAll('.controller-button')[0];
+                controllerButtonStore.classList.add('selected');
             }
             else {
-                document.querySelector('.old-filter').style.opacity = '1';
+                controllerButtonStore = document.querySelectorAll('.controller-button')[0];
+                controllerButtonStore.classList.add('selected');
+
             }
-            clearInterval(nowDivInterval);
+            displayArtists(0);         
+        }
+        else {
+            if (controllerButtonStore !== null) {
+                // change the current selected controller button to the button of index + 1
+                controllerButtonStore.classList.remove('selected');
+                controllerButtonStore = document.querySelectorAll('.controller-button')[index + 1];
+                controllerButtonStore.classList.add('selected');
+            }
+            else {
+                controllerButtonStore = document.querySelectorAll('.controller-button')[index + 1];
+                controllerButtonStore.classList.add('selected');
+
+            }
+            displayArtist(index + 1);
+        }
+    });
+    let volume = 0.2;
+    let volumeInterval = setInterval(() => {
+        if (shouldStop) {
+            clearInterval(volumeInterval);
+            return;
+        }
+        if (volume < 1 && 1 - volume >= 0.1) {
+            volume += 0.1;
+            audio.volume = volume;
+        }
+        else {
+            clearInterval(volumeInterval);
         }
     }, 1000);
+    document.querySelector('.nostalgic-filter').style.display = 'block';
+    document.querySelector('.old-filter').style.display = 'block';
+    if (selectedValues.range === 'short_term') {
+        document.querySelector('.old-filter').style.opacity = '0.3';
+    }
+    else if (selectedValues.range === 'medium_term') {
+        document.querySelector('.old-filter').style.opacity = '0.6';
+    }
+    else {
+        document.querySelector('.old-filter').style.opacity = '1';
+    }
     // use the typeWriter function to type out the "Now Playing: {{ the track-name attribute of the artist container}} by {{ the data-name attribute of the artist container}}" on the nowDiv paragraph element and then 2s seconds after it's over fade out the nowDiv and fade in the track-div
     if (shouldStop) return;
     typeWriter(`Now Playing: ${artists[index].topDiv.getAttribute('track-name')} by ${artists[index].topDiv.getAttribute('data-name')}`, '.now-div p', 100);
@@ -549,15 +604,116 @@ function displayArtist(index) {
     }, 6000);
 }
 
-// testing Function displayTracks to display the tracks on the element with id "tvscreen"
-function displayTracks() {
-    const tvScreen = document.getElementsByClassName('tv-screen')[0].appendChild(tracks[2].topDiv);
-    // play the track preview
-    const preview = document.querySelector('.track-div').getAttribute('data-preview');
-    const audio = new Audio(preview);
-    audio.play();
+// testing Function displayTracks to display the tracks on the element with id "tvscreen" this function is going to be used in the displayTracks function, it takes the index of the track in the tracks array as an argument with a similar mockup to the  displayArtist function
+function displayTrack(index) {
+    shouldStop = false;
+    const tvScreen = document.getElementsByClassName('tv-screen')[0].appendChild(tracks[index].topDiv);
+    const noise = document.querySelector('.noise');
+    const artistDiv = document.querySelector('.artist-div');
+    if (shouldStop) return;
+    noise.style.transition = 'all 4s ease-in-out';
+    noise.style.opacity = '0';
+    if (shouldStop) return;
+    // add display to the "static-top" and "static-bottom" classes
+    document.querySelector('.static-top').style.display = 'block';
+    document.querySelector('.static-bottom').style.display = 'block';
+    
+    let nowDivInterval = setInterval(() => {
+        if (shouldStop) return;
+        artistDiv.style.transition = 'all 1s ease-in-out';
+        artistDiv.style.opacity = '1';
+        // Get the data-preview attribute from the child ".track-div" of the topDiv
+        const trackDiv = document.querySelector('.track-div');
+        const preview = trackDiv.getAttribute('data-preview');
+        // play the track preview
+        startAudio(preview);
+        audio.addEventListener('ended', () => {
+            if (shouldStop) return;
+            resetTvScreenAfterTrack();
+            flushtvScreen();
+            if (index + 1 >= tracks.length) {
+                if (controllerButtonStore !== null) {
+                    controllerButtonStore.classList.remove('selected');
+                    controllerButtonStore = document.querySelectorAll('.controller-button')[0];
+                    controllerButtonStore.classList.add('selected');
+                }
+                else {
+                    controllerButtonStore = document.querySelectorAll('.controller-button')[0];
+                    controllerButtonStore.classList.add('selected');
+
+                }
+                displayTracks(0);
+            }
+            else {
+                if (controllerButtonStore !== null) {
+                    // change the current selected controller button to the button of index + 1
+                    controllerButtonStore.classList.remove('selected');
+                    controllerButtonStore = document.querySelectorAll('.controller-button')[index + 1];
+                    controllerButtonStore.classList.add('selected');
+                }
+                else {
+                    controllerButtonStore = document.querySelectorAll('.controller-button')[index + 1];
+                    controllerButtonStore.classList.add('selected');
+
+                }
+                displayTracks(index + 1);
+            }
+        });
+        let volume = 0.2;
+        let volumeInterval = setInterval(() => {
+            if (shouldStop) {
+                clearInterval(volumeInterval);
+                return;
+            }
+            if (volume < 1 && 1 - volume >= 0.1) {
+                volume += 0.1;
+                audio.volume = volume;
+            }
+            else {
+                clearInterval(volumeInterval);
+            }
+        }, 1000);
+        document.querySelector('.nostalgic-filter').style.display = 'block';
+        document.querySelector('.old-filter').style.display = 'block';
+        if (selectedValues.range === 'short_term') {
+            document.querySelector('.old-filter').style.opacity = '0.3';
+        }
+        else if (selectedValues.range === 'medium_term') {
+            document.querySelector('.old-filter').style.opacity = '0.6';
+        }
+        else {
+            document.querySelector('.old-filter').style.opacity = '1';
+        }
+        clearInterval(nowDivInterval);
+    }, 1000);
+    setTimeout(() => {
+        if (shouldStop) return;
+        artistDiv.style.transition = 'all 1s ease-in-out';
+        artistDiv.style.opacity = '0';
+        trackDiv.style.transition = 'all 1s ease-in-out';
+        trackDiv.style.opacity = '1';
+    }, 3000);
 }
-// // // testing Function displayGenres to display the genres on the element with id "tvscreen"
-// function displayGenres() {
-//     const tvScreen = document.getElementsByClassName('tv-screen')[0].appendChild(genres[0].topDiv);
-// 
+// // testing Function displayGenres to display the genres on the element with id "tvscreen"
+function displayGenres() {
+    const tvScreen = document.getElementsByClassName('tv-screen')[0].appendChild(genres[0].topDiv);
+    const genreContainer = document.querySelector('.genre-container');
+    const noise = document.querySelector('.noise');
+    noise.style.transition = 'all 4s ease-in-out';
+    noise.style.opacity = '0'
+    document.querySelector('.static-top').style.display = 'block';
+    document.querySelector('.static-bottom').style.display = 'block';
+    document.querySelector('.nostalgic-filter').style.display = 'block';
+    document.querySelector('.old-filter').style.display = 'block';
+    if (selectedValues.range === 'short_term') {
+        document.querySelector('.old-filter').style.opacity = '0.3';
+    }
+    else if (selectedValues.range === 'medium_term') {
+        document.querySelector('.old-filter').style.opacity = '0.6';
+    }
+    else {
+        document.querySelector('.old-filter').style.opacity = '1';
+    }
+    genreContainer.style.transition = 'all 3s ease-in-out';
+    genreContainer.style.opacity = '1';
+}

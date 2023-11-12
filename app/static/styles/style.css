@@ -400,6 +400,7 @@ video {
 
 .controller-button.selected {
     background-color: rgb(38, 61, 177);
+    transform: translateY(0.3vw); /* Move the button down */
 
 }
 
@@ -621,6 +622,7 @@ label[for="retro-slider"] {
     left: 0;
     width: 100%;
     height: 100%;
+    opacity: 0;
     z-index: 10001;
 }
 .genre-div {
@@ -790,13 +792,16 @@ label[for="retro-slider"] {
         padding-top: 60%;
     }
     .track-div img {
-        width: 40%;
+        width: 45%;
     }
     .track-div h1 {
         font-size: 4vw;
     }
     .track-div p {
         font-size: 3vw;
+    }
+    .now-div p {
+        font-size: 3vw; 
     }
     /* BUTTON CONTROLLER section */
     .button-container {
@@ -843,7 +848,11 @@ label[for="retro-slider"] {
         font-size: 3vw;
         height: 7vw;
         width: 7vw;
-        border-radius: 1vw;
+        border-radius: 50%;
+    }
+    .controller-button.selected {
+        transform: translateY(1vw); /* Move the button down */
+    
     }
     .top-half > p {
         font-size: 3vw;
