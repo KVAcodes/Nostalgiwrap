@@ -6,6 +6,9 @@ let shouldStop = false;
 // global variable to store the audio object
 let audio;
 
+// retrieve the div with class modal
+const modal = document.querySelector('.modal');
+
 // Store the tracks, artists and genres in global arrays
 const tracks = [];
 const artists = [];
@@ -225,6 +228,8 @@ document.getElementById('submit-button').addEventListener('click', () => {
                 if (selectedValues.type === 'Tracks') {
                     makeTracks();
                     displayTracks(0);
+                    // change the modal background-color to background-color: rgba(0, 0, 0, 0.95);
+                    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.95)';
                     // display the button with id "return"
                     document.getElementById('return').style.display = 'block';
                     topTracksPlaylist();
@@ -232,11 +237,13 @@ document.getElementById('submit-button').addEventListener('click', () => {
                 else if (selectedValues.type === 'Artists') {
                     makeArtists();
                     displayArtists(0);
+                    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.95)';
                     document.getElementById('return').style.display = 'block';
                 }
                 else {
                     makeGenres();
                     displayGenres();
+                    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.95)';
                     document.getElementById('return').style.display = 'block';
                     genreRecommendPlaylist();
                 }
@@ -280,6 +287,7 @@ function addControllerEventListeners() {
 // add event listener to the button with id "return" to fade out the controller-section class div and fade in the button-container class div
 document.getElementById('return').addEventListener('click', () => {
     shouldStop = true;
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
     stopAudio();
     resetTvScreen(); // change to reset tv screen general
     flushAll();
@@ -320,7 +328,7 @@ function genreRecommendPlaylist() {
             })
             .catch((error) => {
                 console.error('Error:', error);
-            });
+            }); 
     });
 }
 // Function topTracksPlaylist to create a button with id "top-tracks-playlist" in the bottom half and add an event listener to the button to send a GET request to my flask app at route "/save_as_playlist"
@@ -394,6 +402,7 @@ function flushControllerSection() {
 }
 // Function flushAll calling the flush function, flushtvScreen function and flushControllerSection function
 function flushAll() {
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
     fadeControllerAddButtons();
     flushArrays();
     flushtvScreen();
@@ -510,11 +519,7 @@ function displayArtists(artist) {
 function displayTracks(track) {
     displayTrack(track);
 }
-
-
-
-// stand alone function displayArtist to display a single artist on the element with id "tvscreen" this function is going to be used in the displayArtists function, it takes the index of the artist in the artists array as an argument.
-// it follows a sequence of steps to display the artist on the tv screen, first it appends the topDiv to the tv-screen element, fades out the div of class 'noise' over the course of 4s, as it starts fading out, fade in the now-div if the topDiv as been appended if not try again every second until it has been appended
+// testing Function displayTracks to display the tracks on the element with id "tvscreen" this function is going to be used in the displayTracks function, it takes the index of the track in the tracks array as an argument with a similar mockup to the  displayArtist function
 function displayArtist(index) {
     shouldStop = false;
     const tvScreen = document.getElementsByClassName('tv-screen')[0].appendChild(artists[index].topDiv);
@@ -523,23 +528,119 @@ function displayArtist(index) {
     if (shouldStop) return;
     noise.style.transition = 'all 4s ease-in-out';
     noise.style.opacity = '0';
+    
     if (shouldStop) return;
     // add display to the "static-top" and "static-bottom" classes
     document.querySelector('.static-top').style.display = 'block';
     document.querySelector('.static-bottom').style.display = 'block';
-    if (shouldStop) {
-        return;
-    }
-    nowDiv.style.transition = 'all 1s ease-in-out';
-    nowDiv.style.opacity = '1';
-    const preview = artists[index].topDiv.getAttribute('data-preview');
+    let nowDivInterval = setInterval(() => {
+        if (shouldStop) {
+            clearInterval(nowDivInterval);
+            return;
+        }
+        if (tvScreen.contains(artists[index].topDiv)) {
+            nowDiv.style.transition = 'all 1s ease-in-out';
+            nowDiv.style.opacity = '1';
+            const preview = artists[index].topDiv.getAttribute('data-preview');
+            // play the track preview
+            startAudio(preview);
+            audio.addEventListener('ended', () => {
+                if (shouldStop) return;
+                resetTvScreenAfterArtist();
+                flushtvScreen();    
+                if (index + 1 >= artists.length) {
+                    if (controllerButtonStore !== null) {
+                        controllerButtonStore.classList.remove('selected');
+                        controllerButtonStore = document.querySelectorAll('.controller-button')[0];
+                        controllerButtonStore.classList.add('selected');
+                    }
+                    else {
+                        controllerButtonStore = document.querySelectorAll('.controller-button')[0];
+                        controllerButtonStore.classList.add('selected');
+        
+                    }
+                    displayArtists(0);
+                }
+                else {
+                    if (controllerButtonStore !== null) {
+                        // change the current selected controller button to the button of index + 1
+                        controllerButtonStore.classList.remove('selected');
+                        controllerButtonStore = document.querySelectorAll('.controller-button')[index + 1];
+                        controllerButtonStore.classList.add('selected');
+                    }
+                    else {
+                        controllerButtonStore = document.querySelectorAll('.controller-button')[index + 1];
+                        controllerButtonStore.classList.add('selected');
+        
+                    }
+                    displayArtist(index + 1);
+                }
+            });
+            let volume = 0.2;
+            let volumeInterval = setInterval(() => {
+                if (shouldStop) {
+                    clearInterval(volumeInterval);
+                    return;
+                }
+                if (volume < 1 && 1 - volume >= 0.1) {
+                    volume += 0.1;
+                    audio.volume = volume;
+                }
+                else {
+                    clearInterval(volumeInterval);
+                }
+            }, 1000);
+            document.querySelector('.nostalgic-filter').style.display = 'block';
+            document.querySelector('.old-filter').style.display = 'block';
+            if (selectedValues.range === 'short_term') {
+                document.querySelector('.old-filter').style.opacity = '0.3';
+            }
+            else if (selectedValues.range === 'medium_term') {
+                document.querySelector('.old-filter').style.opacity = '0.6';
+            }
+            else {
+                document.querySelector('.old-filter').style.opacity = '1';
+            }
+            clearInterval(nowDivInterval);
+        }
+    }, 1000);
+    // use the typeWriter function to type out the "Now Playing: {{ the track-name attribute of the artist container}} by {{ the data-name attribute of the artist container}}" on the nowDiv paragraph element and then 2s seconds after it's over fade out the nowDiv and fade in the track-div
+    if (shouldStop) return;
+    typeWriter(`Now Playing: ${artists[index].topDiv.getAttribute('track-name')} by ${artists[index].topDiv.getAttribute('data-name')}`, '.now-div p', 100);
+    setTimeout(() => {
+        if (shouldStop) return;
+        nowDiv.style.transition = 'all 1s ease-in-out';
+        nowDiv.style.opacity = '0';
+        artists[index].topDiv.querySelector('.track-div').style.transition = 'all 1s ease-in-out';
+        artists[index].topDiv.querySelector('.track-div').style.opacity = '1';
+    }, 6000);
+}
+
+function displayTrack(index) {
+    shouldStop = false;
+    const tvScreen = document.getElementsByClassName('tv-screen')[0].appendChild(tracks[index].topDiv);
+    const noise = document.querySelector('.noise');
+    const artistDiv = document.querySelector('.artist-div');
+    if (shouldStop) return;
+    noise.style.transition = 'all 4s ease-in-out';
+    noise.style.opacity = '0';
+    if (shouldStop) return;
+    // add display to the "static-top" and "static-bottom" classes
+    document.querySelector('.static-top').style.display = 'block';
+    document.querySelector('.static-bottom').style.display = 'block';
+    if (shouldStop) return;
+    artistDiv.style.transition = 'all 3s ease-in-out';
+    artistDiv.style.opacity = '1';
+    // Get the data-preview attribute from the child ".track-div" of the topDiv
+    const trackDiv = document.querySelector('.track-div');
+    const preview = trackDiv.getAttribute('data-preview');
     // play the track preview
     startAudio(preview);
     audio.addEventListener('ended', () => {
         if (shouldStop) return;
-        resetTvScreenAfterArtist();
+        resetTvScreenAfterTrack();
         flushtvScreen();
-        if (index + 1 >= artists.length) {
+        if (index + 1 >= tracks.length) {           
             if (controllerButtonStore !== null) {
                 controllerButtonStore.classList.remove('selected');
                 controllerButtonStore = document.querySelectorAll('.controller-button')[0];
@@ -550,7 +651,7 @@ function displayArtist(index) {
                 controllerButtonStore.classList.add('selected');
 
             }
-            displayArtists(0);         
+            displayTracks(0);
         }
         else {
             if (controllerButtonStore !== null) {
@@ -564,7 +665,7 @@ function displayArtist(index) {
                 controllerButtonStore.classList.add('selected');
 
             }
-            displayArtist(index + 1);
+            displayTracks(index + 1);
         }
     });
     let volume = 0.2;
@@ -592,100 +693,6 @@ function displayArtist(index) {
     else {
         document.querySelector('.old-filter').style.opacity = '1';
     }
-    // use the typeWriter function to type out the "Now Playing: {{ the track-name attribute of the artist container}} by {{ the data-name attribute of the artist container}}" on the nowDiv paragraph element and then 2s seconds after it's over fade out the nowDiv and fade in the track-div
-    if (shouldStop) return;
-    typeWriter(`Now Playing: ${artists[index].topDiv.getAttribute('track-name')} by ${artists[index].topDiv.getAttribute('data-name')}`, '.now-div p', 100);
-    setTimeout(() => {
-        if (shouldStop) return;
-        nowDiv.style.transition = 'all 1s ease-in-out';
-        nowDiv.style.opacity = '0';
-        artists[index].topDiv.querySelector('.track-div').style.transition = 'all 1s ease-in-out';
-        artists[index].topDiv.querySelector('.track-div').style.opacity = '1';
-    }, 6000);
-}
-
-// testing Function displayTracks to display the tracks on the element with id "tvscreen" this function is going to be used in the displayTracks function, it takes the index of the track in the tracks array as an argument with a similar mockup to the  displayArtist function
-function displayTrack(index) {
-    shouldStop = false;
-    const tvScreen = document.getElementsByClassName('tv-screen')[0].appendChild(tracks[index].topDiv);
-    const noise = document.querySelector('.noise');
-    const artistDiv = document.querySelector('.artist-div');
-    if (shouldStop) return;
-    noise.style.transition = 'all 4s ease-in-out';
-    noise.style.opacity = '0';
-    if (shouldStop) return;
-    // add display to the "static-top" and "static-bottom" classes
-    document.querySelector('.static-top').style.display = 'block';
-    document.querySelector('.static-bottom').style.display = 'block';
-    
-    let nowDivInterval = setInterval(() => {
-        if (shouldStop) return;
-        artistDiv.style.transition = 'all 1s ease-in-out';
-        artistDiv.style.opacity = '1';
-        // Get the data-preview attribute from the child ".track-div" of the topDiv
-        const trackDiv = document.querySelector('.track-div');
-        const preview = trackDiv.getAttribute('data-preview');
-        // play the track preview
-        startAudio(preview);
-        audio.addEventListener('ended', () => {
-            if (shouldStop) return;
-            resetTvScreenAfterTrack();
-            flushtvScreen();
-            if (index + 1 >= tracks.length) {
-                if (controllerButtonStore !== null) {
-                    controllerButtonStore.classList.remove('selected');
-                    controllerButtonStore = document.querySelectorAll('.controller-button')[0];
-                    controllerButtonStore.classList.add('selected');
-                }
-                else {
-                    controllerButtonStore = document.querySelectorAll('.controller-button')[0];
-                    controllerButtonStore.classList.add('selected');
-
-                }
-                displayTracks(0);
-            }
-            else {
-                if (controllerButtonStore !== null) {
-                    // change the current selected controller button to the button of index + 1
-                    controllerButtonStore.classList.remove('selected');
-                    controllerButtonStore = document.querySelectorAll('.controller-button')[index + 1];
-                    controllerButtonStore.classList.add('selected');
-                }
-                else {
-                    controllerButtonStore = document.querySelectorAll('.controller-button')[index + 1];
-                    controllerButtonStore.classList.add('selected');
-
-                }
-                displayTracks(index + 1);
-            }
-        });
-        let volume = 0.2;
-        let volumeInterval = setInterval(() => {
-            if (shouldStop) {
-                clearInterval(volumeInterval);
-                return;
-            }
-            if (volume < 1 && 1 - volume >= 0.1) {
-                volume += 0.1;
-                audio.volume = volume;
-            }
-            else {
-                clearInterval(volumeInterval);
-            }
-        }, 1000);
-        document.querySelector('.nostalgic-filter').style.display = 'block';
-        document.querySelector('.old-filter').style.display = 'block';
-        if (selectedValues.range === 'short_term') {
-            document.querySelector('.old-filter').style.opacity = '0.3';
-        }
-        else if (selectedValues.range === 'medium_term') {
-            document.querySelector('.old-filter').style.opacity = '0.6';
-        }
-        else {
-            document.querySelector('.old-filter').style.opacity = '1';
-        }
-        clearInterval(nowDivInterval);
-    }, 1000);
     setTimeout(() => {
         if (shouldStop) return;
         artistDiv.style.transition = 'all 1s ease-in-out';
